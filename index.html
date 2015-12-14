@@ -1,0 +1,106 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" ng-app="myApp">
+	<head>
+		<title>Strona główna</title>
+		<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+		<meta http-equiv="Content-Style-Type" content="text/css" />
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="https://bootswatch.com/sandstone/bootstrap.min.css">
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+		<script src="angular.js"></script>
+		<script src="script.js"></script>
+	</head>
+	<body>
+
+		<div ng-controller="myController" class="container"> 
+			<nav class="navbar navbar-default">
+				<div class="container-fluid">
+					<div class="navbar-header">
+						<a class="navbar-brand" href="#" ng-click="changeView('searchView')">Wyszukiwarka filmów</a>
+					</div>
+				</div>
+			</nav>
+
+			<div ng-switch="currentView">
+				<div ng-switch-when="searchView">
+					<div class="jumbotron">
+						<form id="frmSearch" name="frmSearch" novalidate>
+							<div class="input-group">
+								<input type="text" class="form-control" placeholder="Czego szukasz?" ng-model="value">
+								<span class="input-group-btn">
+									<button class="btn btn-default" type="submit" ng-click="showSearchResults(value)"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+								</span>
+							</div>
+						</form>
+					</div>
+				</div>
+				<div ng-switch-when="searchMoviesView">
+					<div class="jumbotron">
+						<h3>Wyniki wyszukiwania dla frazy: <em>{{search}}</em></h3>
+						Znalezionych filmów: {{searchMovies.total_results}}
+					</div>
+					<div class="media" ng-repeat="movie in searchMovies.results">
+						<div class="media-left">
+							<a href="#" ng-click="goToMovie(movie.id)">
+								<img class="media-object" ng-src="{{ movie.poster_path ? smallImage + movie.poster_path : smallNoImage }}" alt="{{movie.title}}" style="width:92px">
+							</a>
+						</div>
+						<div class="media-body">
+							<h4 class="media-heading" ng-click="goToMovie(movie.id)">{{movie.title}}</h4>
+							<span class="label label-default"><span class="glyphicon glyphicon-star" aria-hidden="true"></span> {{movie.vote_average}}/10</span>
+							<dl class="dl-horizontal">
+								<dt>Oryginalny tytuł:</dt>
+								<dd>{{movie.original_title}}</dd>
+								<dt>Data premiery:</dt>
+								<dd>{{movie.release_date}}</dd>
+								<dt>Skrócony opis:</dt>
+								<dd>{{movie.overview}}</dd>
+							</dl>
+						</div>
+						<hr>
+					</div>
+					<div class="row">
+						<button class="btn btn-default pull-left" type="button" ng-click="previousPage()" ng-show="page != 1">Poprzednia strona</button>
+						<button class="btn btn-default pull-right" type="button" ng-click="nextPage()" ng-show="page != pages">Następna strona</button>
+					</div>
+				</div>
+				<div ng-switch-when="movieView">
+					<div class="jumbotron">
+						<div class="row">
+							<div class="col-md-4">
+								<a href="{{ currentMovie.poster_path ? bigImage + currentMovie.poster_path : bigNoImage }}" alt="{{currentMovie.title}}" class="thumbnail">
+									<img ng-src="{{ currentMovie.poster_path ? bigImage + currentMovie.poster_path : bigNoImage }}" alt="{{currentMovie.title}}" style="width:500px">
+								</a>
+							</div>
+							<div class="col-md-8">
+								<h2>{{currentMovie.title}}</h2>
+								<h3>{{currentMovie.original_title}}</h3>
+								<p><span class="label label-default"><span class="glyphicon glyphicon-star" aria-hidden="true"></span> {{currentMovie.vote_average}}/10</span></p>
+								<p>Data premiery: {{currentMovie.release_date}}</p>
+								<p>
+									Kategoria:
+									<span class="label label-warning" ng-repeat="genre in currentMovie.genres">{{genre.name}}</span>
+								</p>
+								<p>
+									Wytwórnia:
+									<span class="label label-warning" ng-repeat="company in currentMovie.production_companies">{{company.name}}</span>
+								</p>
+								<p>
+									Kraj produkcji:
+									<span class="label label-warning" ng-repeat="country in currentMovie.production_countries">{{country.name}}</span>
+								</p>
+								<p>Opis:<br>{{currentMovie.overview}}</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<footer>
+				<hr>
+				<p>&copy; 2015 Artur Górowski</p>
+			</footer>
+		</div>
+
+	</body>
+</html>
